@@ -80,7 +80,7 @@
 
   const FONT_BY_NUM = { 1: 'consolas', 2: 'ubuntu', 3: 'ui-mono', 4: 'courier' };
 
-  const DUE_RELATIVE_ALT = 'today|tdy|tomorrow|tmrw';
+  const DUE_RELATIVE_ALT = 'today|tdy|tonight|tn|tomorrow|tmrw';
   const DUE_PARSE_PATTERNS = [
     new RegExp(`\\bdue:\\s*(${DUE_RELATIVE_ALT}|\\d{1,2}\\/\\d{1,2}(?:\\/\\d{2,4})?)`, 'i'),
     new RegExp(`(?:^|\\s)due\\s+(${DUE_RELATIVE_ALT}|\\d{1,2}\\/\\d{1,2}(?:\\/\\d{2,4})?)`, 'i'),
@@ -90,7 +90,7 @@
   const MSG_UNKNOWN_CMD =
     'use: add …   edit …   defer …   done …   rm …   clear …   find …   sort …   undo   help   finished   settings   font';
   const MSG_DEFER_USAGE =
-    'use: defer N today | tdy | tomorrow | tmrw | mm/dd   or   defer text … (same)';
+    'use: defer N today | tdy | tonight | tn | tomorrow | tmrw | mm/dd   or   defer text … (same)';
 
   // =============================================================================
   // STORE — task list state, localStorage, one-step undo, queries / mutations
@@ -245,13 +245,13 @@
     },
     dueTokenToIso(token) {
       const s = String(token).toLowerCase();
-      if (s === 'today' || s === 'tdy') return due.todayIso();
+      if (s === 'today' || s === 'tdy' || s === 'tonight' || s === 'tn') return due.todayIso();
       if (s === 'tomorrow' || s === 'tmrw') return due.tomorrowIso();
       return due.datePartsToIso(token);
     },
     parseDueOnly(raw) {
       const s = raw.trim().toLowerCase();
-      if (s === 'today' || s === 'tdy') return due.todayIso();
+      if (s === 'today' || s === 'tdy' || s === 'tonight' || s === 'tn') return due.todayIso();
       if (s === 'tomorrow' || s === 'tmrw') return due.tomorrowIso();
       const m = s.match(/^(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)$/);
       if (m) return due.datePartsToIso(m[1]);

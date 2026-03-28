@@ -27,7 +27,7 @@ Type a line and press **Enter**. If **add** is optional (default), a line that i
 
 | Area                    | Notes                                                                                                                                                                              |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **add**                 | `add …` always works. Example: `add buy milk due tomorrow`. Dates: `due mm/dd`, `due today`/`tdy`, `due tomorrow`/`tmrw`, `due:mm/dd`, `@mm/dd` (year optional).                   |
+| **add**                 | `add …` always works. Example: `add buy milk due tomorrow`. Dates: `due mm/dd`, `due today`/`tdy`/`tonight`/`tn`, `due tomorrow`/`tmrw`, `due:mm/dd`, `@mm/dd` (year optional).                   |
 | **settings**            | Opens the **settings** panel (same centered layout as **help** / **finished**). Toggles **Require `add` keyword** and **Light mode** (default off = dark); saved in `**localStorage`**. |
 | **edit**                | `edit N …` — *N*th open task (or *N*th visible row if **find** is on). `edit word …` — match task by substring, then new text. Clearing due in the new text clears the task’s due. |
 | **defer**               | `defer N due` or `defer … due` — last word is the due; leading text matches an open task name. Same date tokens as **add**.                                                        |
