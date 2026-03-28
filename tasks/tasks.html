@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tasks</title>
+<link rel="stylesheet" href="tasks.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>tasks</h1>
+    <div class="header-actions">
+      <button type="button" id="btn-finished" aria-haspopup="dialog" aria-controls="finished-panel" aria-expanded="false">
+        finished<span class="count" id="finished-count"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="section">
+    <div id="task-list-open"></div>
+  </div>
+
+  <div id="input-area">
+    <span id="prompt">&gt;</span>
+    <input id="cmd" type="text" autocomplete="off" spellcheck="false" autofocus />
+  </div>
+
+  <div id="feedback"></div>
+  <div id="font-preview" class="font-preview is-hidden" aria-label="Font presets"></div>
+
+  <div id="finished-overlay" aria-hidden="true">
+    <div class="backdrop" id="finished-backdrop" tabindex="-1"></div>
+    <div id="finished-panel" role="dialog" aria-modal="true" aria-labelledby="finished-heading">
+      <div class="panel-head">
+        <h2 id="finished-heading">finished</h2>
+        <button type="button" id="btn-close-finished">close</button>
+      </div>
+      <div id="task-list-finished"></div>
+    </div>
+  </div>
+
+  <div id="help-overlay" aria-hidden="true">
+    <div class="backdrop" id="help-backdrop" tabindex="-1"></div>
+    <div id="help-panel" role="dialog" aria-modal="true" aria-labelledby="help-heading">
+      <div class="panel-head">
+        <h2 id="help-heading">help</h2>
+        <button type="button" id="btn-close-help">close</button>
+      </div>
+      <div id="help-body" class="help-body"></div>
+    </div>
+  </div>
+
+  <div id="settings-overlay" aria-hidden="true">
+    <div class="backdrop" id="settings-backdrop" tabindex="-1"></div>
+    <div id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-heading">
+      <div class="panel-head">
+        <h2 id="settings-heading">settings</h2>
+        <button type="button" id="btn-close-settings">close</button>
+      </div>
+      <div class="settings-body">
+        <div class="settings-toggle-row">
+          <span class="settings-toggle-label" id="setting-require-add-label">Require <code class="settings-code">add</code> keyword for new tasks</span>
+          <label class="ios-switch" for="setting-require-add">
+            <input type="checkbox" id="setting-require-add" class="ios-switch-input" aria-labelledby="setting-require-add-label" />
+            <span class="ios-switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+        <p class="settings-hint">When off, any line that is not a command is added like <code class="settings-code">add …</code>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script defer src="tasks.js"></script>
+</body>
+</html>
