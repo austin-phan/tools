@@ -11,8 +11,40 @@
   --done-text: #444;
   --red: #c0392b;
   --green: #4a7c59;
+  --backdrop: rgba(0, 0, 0, 0.65);
+  --panel-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --task-hover-bg: #131313;
+  --font-preview-hover-bg: #1a1a1a;
+  --switch-track-off: #2c2c2e;
+  --switch-thumb: #fff;
+  --switch-thumb-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   /* Clean terminal-style monospace; system fonts only (no webfonts) */
   --font: ui-monospace, 'Consolas', 'Menlo', 'Monaco', 'Segoe UI Mono', 'Liberation Mono', monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+  --bg: #e6e4df;
+  --surface: #faf9f6;
+  --border: #c8c2b6;
+  --text: #1f1e1c;
+  --dim: #5e5a52;
+  --accent: #d4a82e;
+  --done: #ddd8ce;
+  --done-text: #6a655c;
+  --red: #d12a20;
+  --green: #1f7a45;
+  --backdrop: rgba(30, 28, 22, 0.38);
+  --panel-shadow: 0 16px 44px rgba(0, 0, 0, 0.1);
+  --task-hover-bg: #ebe8e2;
+  --font-preview-hover-bg: #edeae4;
+  --switch-track-off: #bebab2;
+  --switch-thumb: #fff;
+  --switch-thumb-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
 }
 
 html, body {
@@ -135,7 +167,7 @@ h1 {
 #settings-overlay .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: var(--backdrop);
   cursor: pointer;
   z-index: 0;
 }
@@ -152,7 +184,7 @@ h1 {
   flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--panel-shadow);
 }
 
 .panel-head {
@@ -288,7 +320,7 @@ h1 {
 .ios-switch-slider {
   position: absolute;
   inset: 0;
-  background: #2c2c2e;
+  background: var(--switch-track-off);
   border-radius: 999px;
   transition: background 0.22s ease;
   border: 1px solid var(--border);
@@ -302,10 +334,10 @@ h1 {
   left: 2px;
   top: 50%;
   transform: translateY(-50%);
-  background: #fff;
+  background: var(--switch-thumb);
   border-radius: 50%;
   transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--switch-thumb-shadow);
 }
 
 .ios-switch-input:checked + .ios-switch-slider {
@@ -335,7 +367,7 @@ h1 {
 }
 
 .task:hover {
-  background: #131313;
+  background: var(--task-hover-bg);
 }
 
 .task.finished .task-name {
@@ -510,7 +542,7 @@ h1 {
 
 .font-preview-row:hover {
   border-color: var(--accent);
-  background: #1a1a1a;
+  background: var(--font-preview-hover-bg);
 }
 
 .font-preview-row.is-current {

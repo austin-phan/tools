@@ -21,22 +21,39 @@
   /** When true, new tasks must use the `add` keyword; when false (default), plain lines add tasks. */
   let requireAddKeyword = false;
 
+  /** When true, `html` gets class `light`; false (default) is dark mode. */
+  let lightMode = false;
+
+  function applyTheme() {
+    document.documentElement.classList.toggle('light', lightMode);
+  }
+
   function loadSettings() {
     try {
       const raw = localStorage.getItem(SETTINGS_KEY);
       if (!raw) {
         requireAddKeyword = false;
+        lightMode = false;
+        applyTheme();
         return;
       }
-      requireAddKeyword = !!JSON.parse(raw).requireAddKeyword;
+      const o = JSON.parse(raw);
+      requireAddKeyword = !!o.requireAddKeyword;
+      lightMode = !!o.lightMode;
+      applyTheme();
     } catch {
       requireAddKeyword = false;
+      lightMode = false;
+      applyTheme();
     }
   }
 
   function saveSettings() {
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ requireAddKeyword }));
+      localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify({ requireAddKeyword, lightMode })
+      );
     } catch {
       /* ignore */
     }
@@ -477,8 +494,10 @@
       ui.openModal('finished-overlay');
     },
     openSettingsPanel() {
-      const cb = document.getElementById('setting-require-add');
-      if (cb) cb.checked = requireAddKeyword;
+      const cbAdd = document.getElementById('setting-require-add');
+      if (cbAdd) cbAdd.checked = requireAddKeyword;
+      const cbLight = document.getElementById('setting-light-mode');
+      if (cbLight) cbLight.checked = lightMode;
       ui.openModal('settings-overlay');
     }
   };
@@ -1025,6 +1044,16 @@
     if (settingRequireAdd) {
       settingRequireAdd.addEventListener('change', e => {
         requireAddKeyword = e.target.checked;
+        saveSettings();
+        ui.feedback('settings saved', 'ok');
+      });
+    }
+
+    const settingLightMode = document.getElementById('setting-light-mode');
+    if (settingLightMode) {
+      settingLightMode.addEventListener('change', e => {
+        lightMode = e.target.checked;
+        applyTheme();
         saveSettings();
         ui.feedback('settings saved', 'ok');
       });
