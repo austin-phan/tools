@@ -322,7 +322,7 @@ h1 {
   inset: 0;
   background: var(--switch-track-off);
   border-radius: 999px;
-  transition: background 0.22s ease;
+  transition: background-color 0.22s ease;
   border: 1px solid var(--border);
 }
 
@@ -343,7 +343,7 @@ h1 {
 .ios-switch-input:checked + .ios-switch-slider {
   background: var(--accent);
   border-color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: rgba(200, 169, 110, 0.55);
 }
 
 .ios-switch-input:checked + .ios-switch-slider::before {
@@ -363,7 +363,7 @@ h1 {
   padding: 9px 0;
   border-bottom: 1px solid var(--border);
   cursor: default;
-  transition: background 0.1s;
+  transition: background-color 0.1s ease 0s;
 }
 
 .task:hover {
@@ -388,6 +388,7 @@ h1 {
   font-size: 11px;
   color: var(--dim);
   text-align: right;
+  -webkit-user-select: none;
   user-select: none;
   font-weight: 300;
 }
@@ -471,7 +472,7 @@ h1 {
   border: 1px solid var(--border);
   background: var(--surface);
   padding: 0 12px;
-  transition: border-color 0.15s;
+  transition: border-color 0.1s;
 }
 
 #input-area:focus-within {
@@ -482,6 +483,7 @@ h1 {
   color: var(--accent);
   font-family: var(--font);
   font-size: 14px;
+  -webkit-user-select: none;
   user-select: none;
   padding-right: 8px;
   flex-shrink: 0;
@@ -538,7 +540,7 @@ h1 {
   line-height: 1.6;
   cursor: pointer;
   border-radius: 2px;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .font-preview-row:hover {

@@ -179,7 +179,7 @@ h1 {
   height: 100%;
   width: 0%;
   background: var(--accent);
-  transition: width 1s linear, background 0.3s;
+  transition: width 1s linear, background-color 0.3s;
 }
 
 #progress-bar.work  { background: var(--work-accent); }
@@ -218,6 +218,7 @@ h1 {
   color: var(--accent);
   font-family: var(--font);
   font-size: 14px;
+  -webkit-user-select: none;
   user-select: none;
   padding-right: 8px;
   flex-shrink: 0;
@@ -507,7 +508,7 @@ h1 {
   inset: 0;
   background: var(--switch-track-off);
   border-radius: 999px;
-  transition: background 0.22s ease;
+  transition: background-color 0.22s ease;
   border: 1px solid var(--border);
 }
 
@@ -527,7 +528,7 @@ h1 {
 
 .ios-switch-input:checked + .ios-switch-slider {
   background: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  border-color: rgba(200, 169, 110, 0.55);
 }
 
 .ios-switch-input:checked + .ios-switch-slider::before {
