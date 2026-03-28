@@ -29,7 +29,16 @@
 
   <div id="input-area">
     <span id="prompt">&gt;</span>
-    <input id="cmd" type="text" autocomplete="off" spellcheck="false" autofocus />
+    <label id="cmd-label" for="cmd" class="sr-only">command input</label>
+    <input
+      id="cmd"
+      type="text"
+      autocomplete="off"
+      spellcheck="false"
+      autofocus
+      placeholder=""
+      aria-labelledby="cmd-label"
+    />
   </div>
 
   <div id="feedback"></div>
