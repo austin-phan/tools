@@ -55,7 +55,11 @@
         JSON.stringify({ requireAddKeyword, lightMode })
       );
     } catch {
-      /* ignore */
+      try {
+        ui.feedback('could not save settings — storage may be full or blocked', 'error');
+      } catch (_) {
+        /* ignore */
+      }
     }
   }
 
@@ -116,7 +120,15 @@
       return JSON.parse(JSON.stringify(store.state.tasks));
     },
     save() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(store.state.tasks));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store.state.tasks));
+      } catch {
+        try {
+          ui.feedback('could not save tasks — storage may be full or blocked', 'error');
+        } catch (_) {
+          /* ignore */
+        }
+      }
     },
     load() {
       try {
@@ -320,7 +332,13 @@
       if (persist) {
         try {
           localStorage.setItem(FONT_PREF_KEY, id);
-        } catch { /* ignore */ }
+        } catch {
+          try {
+            ui.feedback('could not save font — storage may be full or blocked', 'error');
+          } catch (_) {
+            /* ignore */
+          }
+        }
       }
       return true;
     },
@@ -737,6 +755,7 @@
       }
       store.pushUndo();
       store.state.tasks = [];
+      store.state.listFilter = null;
       store.save();
       ui.render();
       ui.feedback(`cleared all (${n})`, 'ok');
@@ -750,6 +769,7 @@
       }
       store.pushUndo();
       store.state.tasks = store.state.tasks.filter(x => !x.done);
+      store.state.listFilter = null;
       store.save();
       ui.render();
       ui.feedback(`cleared ${n} finished`, 'ok');
@@ -957,8 +977,7 @@
   const EXPORT_NAME_RE = /^[\w.-]+$/;
 
   function exportFilenameFromArg(token) {
-    if (!token) return 'tasks.json';
-    const t = token.trim();
+    const t = String(token).trim();
     if (/\.json$/i.test(t)) {
       const base = t.slice(0, -5);
       if (!EXPORT_NAME_RE.test(base) || !base) return null;
