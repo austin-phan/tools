@@ -1026,6 +1026,12 @@
     return true;
   }
 
+  function tryCd(t) {
+    if (t.trim().toLowerCase() !== 'cd ..') return false;
+    window.location.href = '../tools.html';
+    return true;
+  }
+
   function handleCommand(raw) {
     const trimmed = raw.trim();
     if (!trimmed) {
@@ -1035,6 +1041,7 @@
     if (!/^font/i.test(trimmed)) font.hideFontPreview();
 
     const chain = [
+      tryCd,
       tryUndo,
       tryHelp,
       tryFinished,

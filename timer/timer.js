@@ -625,11 +625,18 @@
     return true;
   }
 
+  function tryCd(t) {
+    if (t.trim().toLowerCase() !== 'cd ..') return false;
+    window.location.href = '../tools.html';
+    return true;
+  }
+
   function handleCommand(raw) {
     const trimmed = raw.trim();
     if (!trimmed) return;
 
     const chain = [
+      tryCd,
       tryStart,
       tryBreak,
       tryPause,
