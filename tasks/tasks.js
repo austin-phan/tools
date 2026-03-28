@@ -966,6 +966,18 @@
     input.addEventListener('blur', onBlur);
   }
 
+  /** True if this page click should move focus to the command line (inert areas only). */
+  function shouldRefocusCmdFromPageClick(e) {
+    const t = e.target;
+    if (t.closest('#cmd')) return false;
+    if (t.closest('button, a, textarea, select, label')) return false;
+    if (t.closest('[aria-modal="true"]')) return false;
+    if (t.closest('.task')) return false;
+    const fp = t.closest('#font-preview');
+    if (fp && !fp.classList.contains('is-hidden')) return false;
+    return true;
+  }
+
   function bind() {
     const cmdEl = document.getElementById('cmd');
     if (!cmdEl) return;
@@ -1004,24 +1016,23 @@
       }
     });
 
-    const appEl = document.getElementById('app');
-    if (appEl) {
-      appEl.addEventListener('click', e => {
-        const nameEl = e.target.closest('.task-name');
-        if (nameEl) {
-          const r = nameEl.closest('.task');
-          if (r && r.dataset.id) {
-            startEditTaskRow(r);
-            return;
-          }
+    document.body.addEventListener('click', e => {
+      const nameEl = e.target.closest('.task-name');
+      if (nameEl) {
+        const r = nameEl.closest('.task');
+        if (r && r.dataset.id) {
+          startEditTaskRow(r);
+          return;
         }
-        const btn = e.target.closest('.task-check');
-        if (!btn) return;
+      }
+      const btn = e.target.closest('.task-check');
+      if (btn) {
         const r = btn.closest('.task');
-        if (!r || !r.dataset.id) return;
-        store.toggleDone(r.dataset.id);
-      });
-    }
+        if (r && r.dataset.id) store.toggleDone(r.dataset.id);
+        return;
+      }
+      if (shouldRefocusCmdFromPageClick(e)) cmdEl.focus();
+    });
 
     const btnCloseHelp = document.getElementById('btn-close-help');
     const helpBackdrop = document.getElementById('help-backdrop');
