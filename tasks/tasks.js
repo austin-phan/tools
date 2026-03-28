@@ -88,7 +88,7 @@
   ];
 
   const MSG_UNKNOWN_CMD =
-    'use: add …   edit …   defer …   done …   rm …   clear …   find …   sort …   undo   help   finished   settings   font';
+    'use: add …   edit …   defer …   done …   rm …   clear …   find …   sort …   undo   export   import   help   finished   settings   font';
   const MSG_DEFER_USAGE =
     'use: defer N today | tdy | tonight | tn | tomorrow | tmrw | mm/dd   or   defer text … (same)';
 
@@ -868,6 +868,145 @@
     return true;
   }
 
+  function normalizeImportedTaskRecord(raw, usedIds) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+    const name = typeof raw.name === 'string' ? raw.name.trim() : '';
+    if (!name) return null;
+    let id = typeof raw.id === 'string' && raw.id.trim() ? raw.id.trim() : store.newId();
+    if (usedIds.has(id)) id = store.newId();
+    usedIds.add(id);
+    const done = !!raw.done;
+    let due = null;
+    if (raw.due != null && raw.due !== '') {
+      const ds = String(raw.due).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(ds)) due = ds;
+    }
+    const created =
+      typeof raw.created === 'number' && Number.isFinite(raw.created) ? raw.created : Date.now();
+    let completedAt = null;
+    if (done) {
+      completedAt =
+        typeof raw.completedAt === 'number' && Number.isFinite(raw.completedAt)
+          ? raw.completedAt
+          : created;
+    }
+    return { id, name, due, done, created, completedAt };
+  }
+
+  function tasksArrayFromImportedJson(parsed) {
+    let arr = parsed;
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && Array.isArray(parsed.tasks)) {
+      arr = parsed.tasks;
+    }
+    if (!Array.isArray(arr)) {
+      if (parsed == null || typeof parsed !== 'object') {
+        throw new Error(
+          'This file is JSON, but it must be an array of tasks, or an object like { "tasks": [ … ] }.'
+        );
+      }
+      throw new Error(
+        'This file is JSON, but it must be either a top-level array of tasks, or an object with a "tasks" array.'
+      );
+    }
+    const usedIds = new Set();
+    const out = [];
+    for (let i = 0; i < arr.length; i++) {
+      const row = normalizeImportedTaskRecord(arr[i], usedIds);
+      if (!row) {
+        throw new Error(
+          `Task at index ${i} is invalid — each entry must be an object with a non-empty "name" string.`
+        );
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  function applyImportedTasksFromJsonText(text) {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (e) {
+      const detail = e.message || String(e);
+      throw new Error(`This file is not valid JSON (${detail}).`);
+    }
+    const tasks = tasksArrayFromImportedJson(parsed);
+    store.pushUndo();
+    store.state.tasks = tasks;
+    store.state.listFilter = null;
+    store.save();
+    ui.render();
+    ui.feedback(`imported ${tasks.length} task(s) — undo restores previous list`, 'ok');
+  }
+
+  function downloadTasksExport(filename) {
+    const text = JSON.stringify(store.state.tasks, null, 2);
+    const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    queueMicrotask(() => {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    });
+  }
+
+  const EXPORT_NAME_RE = /^[\w.-]+$/;
+
+  function exportFilenameFromArg(token) {
+    if (!token) return 'tasks.json';
+    const t = token.trim();
+    if (/\.json$/i.test(t)) {
+      const base = t.slice(0, -5);
+      if (!EXPORT_NAME_RE.test(base) || !base) return null;
+      return `${base}.json`;
+    }
+    if (!EXPORT_NAME_RE.test(t)) return null;
+    return `${t}.json`;
+  }
+
+  function tryExport(t) {
+    const s = t.trim();
+    if (!/^export/i.test(s)) return false;
+    if (/^export$/i.test(s)) {
+      downloadTasksExport('tasks.json');
+      ui.feedback(`exported ${store.state.tasks.length} task(s) → tasks.json`, 'ok');
+      return true;
+    }
+    const m = s.match(/^export\s+(\S+)$/i);
+    if (!m) {
+      ui.feedback('use: export   or   export name (→ name.json)', 'error');
+      return true;
+    }
+    const filename = exportFilenameFromArg(m[1]);
+    if (!filename) {
+      ui.feedback('export: name may only use letters, digits, . - _ (optional .json suffix)', 'error');
+      return true;
+    }
+    downloadTasksExport(filename);
+    ui.feedback(`exported ${store.state.tasks.length} task(s) → ${filename}`, 'ok');
+    return true;
+  }
+
+  function tryImport(t) {
+    const s = t.trim();
+    if (!/^import/i.test(s)) return false;
+    if (!/^import$/i.test(s)) {
+      ui.feedback('use: import (no arguments — pick a JSON file)', 'error');
+      return true;
+    }
+    const input = document.getElementById('import-file');
+    if (!input) {
+      ui.feedback('import: file picker missing', 'error');
+      return true;
+    }
+    input.click();
+    return true;
+  }
+
   function handleCommand(raw) {
     const trimmed = raw.trim();
     if (!trimmed) {
@@ -884,6 +1023,8 @@
       tryFind,
       trySort,
       tryFont,
+      tryExport,
+      tryImport,
       tryDone,
       tryRm,
       tryClear,
@@ -969,8 +1110,7 @@
   /** True if this page click should move focus to the command line (inert areas only). */
   function shouldRefocusCmdFromPageClick(e) {
     const t = e.target;
-    if (t.closest('#cmd')) return false;
-    if (t.closest('button, a, textarea, select, label')) return false;
+    if (t.closest('input, textarea, select, button, a, label')) return false;
     if (t.closest('[aria-modal="true"]')) return false;
     if (t.closest('.task')) return false;
     const fp = t.closest('#font-preview');
@@ -1002,7 +1142,7 @@
       }
       if (e.key === 'Enter') {
         e.preventDefault();
-        for (const oid of ['help-overlay', 'finished-overlay', 'settings-overlay']) {
+        for (const oid of OVERLAY_IDS) {
           const el = document.getElementById(oid);
           if (el && el.classList.contains('is-open')) {
             ui.closeModal(oid);
@@ -1070,6 +1210,26 @@
       });
     }
 
+    const importFile = document.getElementById('import-file');
+    if (importFile) {
+      importFile.addEventListener('change', e => {
+        const input = e.target;
+        const f = input.files && input.files[0];
+        input.value = '';
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            applyImportedTasksFromJsonText(reader.result);
+          } catch (err) {
+            ui.feedback(err.message || 'import failed', 'error');
+          }
+        };
+        reader.onerror = () => ui.feedback('import failed — could not read that file', 'error');
+        reader.readAsText(f, 'UTF-8');
+      });
+    }
+
     const fontPreview = document.getElementById('font-preview');
     if (fontPreview) {
       fontPreview.addEventListener('click', e => {
@@ -1088,7 +1248,7 @@
       e => {
         if (e.key !== 'Enter' && e.key !== 'Escape') return;
         let openId = null;
-        for (const id of ['help-overlay', 'finished-overlay', 'settings-overlay']) {
+        for (const id of OVERLAY_IDS) {
           const el = document.getElementById(id);
           if (el && el.classList.contains('is-open')) {
             openId = id;

@@ -36,7 +36,9 @@ Type a line and press **Enter**. If **add** is optional (default), a line that i
 | **done** / **finish**   | Number, `all`/`*`, or substring. Open tasks only for matching.                                                                                                                     |
 | **rm**                  | Number, `all`/`*`, or substring — open tasks for bulk; substring can hit finished if no open match.                                                                                |
 | **clear**               | `clear` / `clear all` — everything. `clear finished` — finished only.                                                                                                              |
-| **undo**                | One step; exact word `undo`. Covers add/edit/defer/done/rm/clear/sort and **#** clicks.                                                                                            |
+| **export**              | `export` → **`tasks.json`**. `export name` → **`name.json`**. `export name.json` allowed if the base name uses only letters, digits, `.`, `-`, `_`. Same JSON shape as the `tasks` `localStorage` value. |
+| **import**              | `import` (no arguments) opens a **file** picker; choose any `.json` (or related) file. Replaces the list from an array or `{ "tasks": [ … ] }`. Clear errors if the file isn’t valid JSON or the right shape. **`undo`** restores prior. |
+| **undo**                | One step; exact word `undo`. Covers add/edit/defer/done/rm/clear/sort, **import**, and **#** clicks.                                                                                 |
 | **help** / **finished** | Centered panels + backdrop. Close: button, backdrop, **Enter**, **Esc**.                                                                                                           |
 | **font**                | `font` / `font list`, `font 1`–`4` or preset names, `font reset`. Not part of undo.                                                                                                |
 
