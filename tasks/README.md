@@ -12,9 +12,9 @@ Tasks is a command line-style to-do list that runs right in your browser. **HTML
 | `tasks.js`   | Logic |
 
 
-**Docs:** this README is the full reference. The in-app `**help`** text (`HELP_PANEL_HTML` in `**tasks.js**`) is separate — short hints only.
+**Docs:** this README is the full reference. In-app **help** copy lives in **`tasks.html`** (`#help-body`); short hints only.
 
-**Code map:** in `**tasks.js`**, search for `// =========` — sections are **CONSTANTS** (incl. help HTML), **STORE**, **DUE**, **FONT**, **UI**, **COMMANDS**, **ENTRY**.
+**Code map:** in `**tasks.js`**, search for `// =========` — sections are **CONSTANTS**, **STORE**, **DUE**, **FONT**, **UI**, **COMMANDS**, **ENTRY**.
 
 **Storage keys:** `tasks` (task list JSON), `tasks_font` (font preset id), `tasks_settings` (JSON: `requireAddKeyword` — when false, plain lines add tasks; default false).
 

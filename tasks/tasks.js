@@ -2,7 +2,7 @@
  * Tasks app (single file, no ES modules — works when opening tasks.html via file://).
  *
  * Layout:
- *   CONSTANTS (incl. HELP_PANEL_HTML) → STORE → DUE → FONT → UI → COMMANDS → ENTRY
+ *   CONSTANTS → STORE → DUE → FONT → UI → COMMANDS → ENTRY
  */
 (function () {
   'use strict';
@@ -10,6 +10,9 @@
   // =============================================================================
   // CONSTANTS — storage keys, font presets, due regexes, user-facing strings
   // =============================================================================
+
+  /** Clears #feedback after ui.feedback(); module scope avoids a global on `window`. */
+  let feedbackHideTimer = null;
 
   const STORAGE_KEY = 'tasks';
   const FONT_PREF_KEY = 'tasks_font';
@@ -71,13 +74,6 @@
     'use: add …   edit …   defer …   done …   rm …   clear …   find …   sort …   undo   help   finished   settings   font';
   const MSG_DEFER_USAGE =
     'use: defer N today | tdy | tomorrow | tmrw | mm/dd   or   defer text … (same)';
-
-  // In-app help only (#help-body); separate from README.md — edit freely for the popup.
-  const HELP_PANEL_HTML = `
-<p class="help-lead">Type a command, then Enter. Everything stays in this browser.</p>
-<p><span class="help-kw">add</span> … · <span class="help-kw">edit</span> · <span class="help-kw">defer</span> · <span class="help-kw">done</span> / <span class="help-kw">finish</span> · <span class="help-kw">rm</span> · <span class="help-kw">clear</span> · <span class="help-kw">find</span> · <span class="help-kw">sort</span> · <span class="help-kw">undo</span> · <span class="help-kw">help</span> · <span class="help-kw">finished</span> · <span class="help-kw">settings</span> · <span class="help-kw">font</span></p>
-<p class="help-sub">Dues: <span class="help-kw">due …</span>, <span class="help-kw">today</span>/<span class="help-kw">tdy</span>, <span class="help-kw">tomorrow</span>/<span class="help-kw">tmrw</span>, <span class="help-kw">@mm/dd</span>. · ↑ recall · ↓ clear · # done · click name to edit</p>
-`;
 
   // =============================================================================
   // STORE — task list state, localStorage, one-step undo, queries / mutations
@@ -371,7 +367,7 @@
   };
 
   // =============================================================================
-  // UI — escape helpers, task rows, empty states, modals, help HTML injection
+  // UI — escape helpers, task rows, empty states, modals
   // =============================================================================
 
   const OVERLAY_IDS = ['help-overlay', 'finished-overlay', 'settings-overlay'];
@@ -388,10 +384,11 @@
       if (!el) return;
       el.textContent = msg;
       el.className = type;
-      clearTimeout(window._tasksFbTimer);
-      window._tasksFbTimer = setTimeout(() => {
+      clearTimeout(feedbackHideTimer);
+      feedbackHideTimer = setTimeout(() => {
         el.textContent = '';
         el.className = '';
+        feedbackHideTimer = null;
       }, 2500);
     },
     rowHtml(t, displayNum, title, extraClass) {
@@ -483,11 +480,6 @@
       const cb = document.getElementById('setting-require-add');
       if (cb) cb.checked = requireAddKeyword;
       ui.openModal('settings-overlay');
-    },
-    initHelpPanel() {
-      const el = document.getElementById('help-body');
-      if (!el) return;
-      el.innerHTML = HELP_PANEL_HTML.trim();
     }
   };
 
@@ -1078,6 +1070,5 @@
   store.load();
   font.loadFontPreference();
   ui.render();
-  ui.initHelpPanel();
   bind();
 })();
