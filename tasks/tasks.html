@@ -49,9 +49,10 @@
         <button type="button" id="btn-close-help">close</button>
       </div>
       <div id="help-body" class="help-body">
-        <p class="help-lead">Type a command, then Enter. Everything stays in this browser.</p>
+        <p class="help-lead">type a command, then enter. everything stays in this browser.</p>
         <p><span class="help-kw">add</span> … · <span class="help-kw">edit</span> · <span class="help-kw">defer</span> · <span class="help-kw">done</span> / <span class="help-kw">finish</span> · <span class="help-kw">rm</span> · <span class="help-kw">clear</span> · <span class="help-kw">find</span> · <span class="help-kw">sort</span> · <span class="help-kw">undo</span> · <span class="help-kw">export</span> · <span class="help-kw">import</span> · <span class="help-kw">help</span> · <span class="help-kw">finished</span> · <span class="help-kw">settings</span> · <span class="help-kw">font</span></p>
-        <p class="help-sub">Dues: <span class="help-kw">due …</span>, <span class="help-kw">today</span>/<span class="help-kw">tdy</span>/<span class="help-kw">tonight</span>/<span class="help-kw">tn</span>, <span class="help-kw">tomorrow</span>/<span class="help-kw">tmrw</span>, <span class="help-kw">@mm/dd</span>. · ↑ recall · ↓ clear · # done · click name to edit</p>
+        <p class="help-sub">dues: <span class="help-kw">due …</span>, <span class="help-kw">today</span>/<span class="help-kw">tdy</span>/<span class="help-kw">tonight</span>/<span class="help-kw">tn</span>, <span class="help-kw">tomorrow</span>/<span class="help-kw">tmrw</span>, <span class="help-kw">@mm/dd</span>. · ↑ recall · ↓ clear · # done · click name to edit</p>
+        <p class="help-sub">backup: <span class="help-kw">export</span> → tasks.json · <span class="help-kw">export name</span> → name.json · <span class="help-kw">import</span> picks a file. · click empty page to focus the line.</p>
       </div>
     </div>
   </div>
@@ -65,21 +66,21 @@
       </div>
       <div class="settings-body">
         <div class="settings-toggle-row">
-          <span class="settings-toggle-label" id="setting-require-add-label">Require <code class="settings-code">add</code> keyword for new tasks</span>
+          <span class="settings-toggle-label" id="setting-require-add-label">require <code class="settings-code">add</code> keyword for new tasks</span>
           <label class="ios-switch" for="setting-require-add">
             <input type="checkbox" id="setting-require-add" class="ios-switch-input" aria-labelledby="setting-require-add-label" />
             <span class="ios-switch-slider" aria-hidden="true"></span>
           </label>
         </div>
-        <p class="settings-hint">When off, any line that is not a command is added like <code class="settings-code">add …</code>.</p>
+        <p class="settings-hint">when off, any line that is not a command is added like <code class="settings-code">add …</code>.</p>
         <div class="settings-toggle-row">
-          <span class="settings-toggle-label" id="setting-light-mode-label">Light mode</span>
+          <span class="settings-toggle-label" id="setting-light-mode-label">light mode</span>
           <label class="ios-switch" for="setting-light-mode">
             <input type="checkbox" id="setting-light-mode" class="ios-switch-input" aria-labelledby="setting-light-mode-label" />
             <span class="ios-switch-slider" aria-hidden="true"></span>
           </label>
         </div>
-        <p class="settings-hint">Off (default) uses dark mode.</p>
+        <p class="settings-hint">off (default) uses dark mode.</p>
       </div>
     </div>
   </div>
