@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>timer</title>
+<link rel="stylesheet" href="timer.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>timer</h1>
+    <div class="header-actions">
+      <button type="button" id="btn-log" aria-haspopup="dialog" aria-controls="log-panel" aria-expanded="false">
+        log<span class="count" id="log-count"></span>
+      </button>
+    </div>
+  </header>
+
+  <div id="timer-display">
+    <div id="session-label">idle</div>
+    <div id="countdown" class="idle">25:00</div>
+    <div id="progress-bar-wrap">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
+
+  <div id="today-summary"></div>
+
+  <div id="input-area">
+    <span id="prompt">&gt;</span>
+    <input id="cmd" type="text" autocomplete="off" spellcheck="false" autofocus />
+  </div>
+
+  <div id="feedback"></div>
+
+  <!-- log modal -->
+  <div id="log-overlay" aria-hidden="true">
+    <div class="backdrop" id="log-backdrop" tabindex="-1"></div>
+    <div id="log-panel" role="dialog" aria-modal="true" aria-labelledby="log-heading">
+      <div class="panel-head">
+        <h2 id="log-heading">session log</h2>
+        <button type="button" id="btn-close-log">close</button>
+      </div>
+      <div id="log-list"></div>
+    </div>
+  </div>
+
+  <!-- help modal -->
+  <div id="help-overlay" aria-hidden="true">
+    <div class="backdrop" id="help-backdrop" tabindex="-1"></div>
+    <div id="help-panel" role="dialog" aria-modal="true" aria-labelledby="help-heading">
+      <div class="panel-head">
+        <h2 id="help-heading">help</h2>
+        <button type="button" id="btn-close-help">close</button>
+      </div>
+      <div id="help-body">
+        <p class="help-lead">Type a command, then Enter. Timer runs in the tab title so you can minimize it.</p>
+        <p>
+          <span class="help-kw">start</span> [N] · start a work session (default 25 min)<br>
+          <span class="help-kw">break</span> [N] · start a break (default 5 min)<br>
+          <span class="help-kw">pause</span> · pause the current timer<br>
+          <span class="help-kw">resume</span> · resume a paused timer<br>
+          <span class="help-kw">stop</span> · stop and discard the current session<br>
+          <span class="help-kw">extend</span> N · add N minutes to the current session<br>
+          <span class="help-kw">status</span> · show current session info in feedback<br>
+          <span class="help-kw">log</span> · open the session log<br>
+          <span class="help-kw">clear log</span> · clear all session history<br>
+          <span class="help-kw">settings</span> · change defaults<br>
+          <span class="help-kw">help</span> · show this panel
+        </p>
+        <p class="help-sub">↑ recall last command · ↓ clear · click empty page to focus input</p>
+        <p class="help-sub">A chime plays when the timer finishes (if your browser allows it).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- settings modal -->
+  <div id="settings-overlay" aria-hidden="true">
+    <div class="backdrop" id="settings-backdrop" tabindex="-1"></div>
+    <div id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-heading">
+      <div class="panel-head">
+        <h2 id="settings-heading">settings</h2>
+        <button type="button" id="btn-close-settings">close</button>
+      </div>
+      <div class="settings-body">
+        <div class="settings-field-row">
+          <span class="settings-field-label">Default work duration (min)</span>
+          <input type="number" id="setting-work-min" class="settings-number-input" min="1" max="120" value="25" />
+        </div>
+        <div class="settings-field-row">
+          <span class="settings-field-label">Default break duration (min)</span>
+          <input type="number" id="setting-break-min" class="settings-number-input" min="1" max="60" value="5" />
+        </div>
+        <div class="settings-toggle-row">
+          <span class="settings-toggle-label" id="setting-sound-label">Play chime on finish</span>
+          <label class="ios-switch" for="setting-sound">
+            <input type="checkbox" id="setting-sound" class="ios-switch-input" aria-labelledby="setting-sound-label" checked />
+            <span class="ios-switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="settings-toggle-row">
+          <span class="settings-toggle-label" id="setting-light-mode-label">Light mode</span>
+          <label class="ios-switch" for="setting-light-mode">
+            <input type="checkbox" id="setting-light-mode" class="ios-switch-input" aria-labelledby="setting-light-mode-label" />
+            <span class="ios-switch-slider" aria-hidden="true"></span>
+          </label>
+        </div>
+        <p class="settings-hint">Changes save immediately.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script defer src="timer.js"></script>
+</body>
+</html>
