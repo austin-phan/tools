@@ -39,9 +39,9 @@ Type a line and press **enter**. If **add** is optional (default), a line that i
 | **settings**            | Opens the **settings** panel. Toggles **require `add` keyword** and **light mode**. Saved in **localStorage**. 
 
 
-**Line input:** **↑** recalls last line when empty; **↓** clears.
+**Line input:** **↑** navigates backwards through up to 5 previous commands; **↓** moves forward through history and clears the input after the most recent entry is reached. Denote this does mean that the pending input is lost.
 
-**Mouse:** **#** toggles done; **finished** header opens done tasks; click task name to edit (**Enter** save, **Esc** cancel).
+**Mouse:** pressing any **#** toggles done; **finished** header opens done tasks; click task name to edit (**Enter** save, **Esc** cancel).
 
 ---
 

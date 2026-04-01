@@ -107,7 +107,8 @@
     state: {
       tasks: [],
       undoPrev: null,
-      lastCmd: '',
+      cmdHistory: [],
+      cmdHistoryIndex: null,
       listFilter: null
     },
     setRender(fn) {
@@ -153,6 +154,33 @@
       store.save();
       _render();
       return true;
+    },
+    pushCmdHistory(cmd) {
+      store.state.cmdHistory.push(cmd);
+      if (store.state.cmdHistory.length > 5) store.state.cmdHistory.shift();
+      store.state.cmdHistoryIndex = null;
+    },
+    browseCmdHistory(step) {
+      const history = store.state.cmdHistory;
+      if (!history.length) return null;
+      if (step < 0) {
+        if (store.state.cmdHistoryIndex == null) {
+          store.state.cmdHistoryIndex = history.length - 1;
+        } else if (store.state.cmdHistoryIndex > 0) {
+          store.state.cmdHistoryIndex -= 1;
+        }
+        return history[store.state.cmdHistoryIndex];
+      }
+      if (store.state.cmdHistoryIndex == null) return '';
+      if (store.state.cmdHistoryIndex < history.length - 1) {
+        store.state.cmdHistoryIndex += 1;
+        return history[store.state.cmdHistoryIndex];
+      }
+      store.state.cmdHistoryIndex = null;
+      return '';
+    },
+    resetCmdHistoryBrowse() {
+      store.state.cmdHistoryIndex = null;
     },
     openTasks() {
       return store.state.tasks.filter(t => !t.done);
@@ -1154,16 +1182,21 @@
         font.hideFontPreview();
         return;
       }
-      if (e.key === 'ArrowUp' && store.state.lastCmd && e.target.value.trim() === '') {
+      if (e.key === 'ArrowUp') {
+        const nextCmd = store.browseCmdHistory(-1);
+        if (nextCmd == null) return;
         e.preventDefault();
-        e.target.value = store.state.lastCmd;
-        const len = store.state.lastCmd.length;
+        e.target.value = nextCmd;
+        const len = nextCmd.length;
         queueMicrotask(() => e.target.setSelectionRange(len, len));
         return;
       }
       if (e.key === 'ArrowDown') {
+        const nextCmd = store.browseCmdHistory(1);
         e.preventDefault();
-        e.target.value = '';
+        e.target.value = nextCmd;
+        const len = nextCmd.length;
+        queueMicrotask(() => e.target.setSelectionRange(len, len));
         return;
       }
       if (e.key === 'Enter') {
@@ -1177,9 +1210,12 @@
         }
         const line = e.target.value;
         handleCommand(line);
-        if (line.length) store.state.lastCmd = line;
+        if (line.length) store.pushCmdHistory(line);
         e.target.value = '';
+        store.resetCmdHistoryBrowse();
+        return;
       }
+      store.resetCmdHistoryBrowse();
     });
 
     document.body.addEventListener('click', e => {
