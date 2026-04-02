@@ -627,7 +627,7 @@
 
   function tryCd(t) {
     if (t.trim().toLowerCase() !== 'cd ..') return false;
-    window.location.href = '../tools.html';
+    window.location.href = '../index.html';
     return true;
   }
 
