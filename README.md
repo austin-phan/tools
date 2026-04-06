@@ -14,7 +14,7 @@ Each app lives in its own folder so it is possible to open, copy, or deploy each
 ## Structure
  
 ```
-DeskLite/
+desklite/
   index.html      ← launcher/entry point
   README.md
   tasks/
